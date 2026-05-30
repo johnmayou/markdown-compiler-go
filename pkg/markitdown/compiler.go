@@ -1,5 +1,8 @@
 package markitdown
 
-func Add(x int, y int) int {
-	return x + y
+func Compile(md string) string {
+	tks := newLexer().tokenize(md)
+	ast := newParser().parse(tks)
+	out := newCodegen().gen(ast)
+	return out
 }
