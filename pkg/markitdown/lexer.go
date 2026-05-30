@@ -367,6 +367,8 @@ func (l *lexer) tokenizeCurrentLine() {
 
 			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[1]), bold: true, italic: false})
 			line = line[len(match[1]):]
+
+			continue
 		}
 
 		// == Italic ==
@@ -376,6 +378,8 @@ func (l *lexer) tokenizeCurrentLine() {
 
 			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[1]), bold: false, italic: true})
 			line = line[len(match[1]):]
+
+			continue
 		}
 
 		// == Image ==
