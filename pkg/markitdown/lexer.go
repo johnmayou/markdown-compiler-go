@@ -331,7 +331,7 @@ func (l *lexer) tokenizeCurrentLine() {
 			break
 		}
 	}
-	line := l.md[:lineEnd+1]
+	line := l.md[:lineEnd]
 	l.md = l.md[len(line):]
 
 	// Keep track of current substring.
