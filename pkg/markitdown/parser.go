@@ -8,13 +8,23 @@ type astNode interface {
 	isNode()
 }
 
+type astInlineNode interface {
+	astNode
+	isInlineNode()
+}
+
+type astQuoteChild interface {
+	astNode
+	isQuoteChild()
+}
+
 type astRootNode struct {
 	children []astNode
 }
 
 type astHeaderNode struct {
 	size     int
-	children []astNode
+	children []astInlineNode
 }
 
 type astCodeBlockNode struct {
@@ -28,15 +38,15 @@ type astCodeInlineNode struct {
 }
 
 type astQuoteNode struct {
-	children []astNode
+	children []astQuoteChild
 }
 
 type astQuoteItemNode struct {
-	children []astNode
+	children []astInlineNode
 }
 
 type astParagraphNode struct {
-	children []astNode
+	children []astInlineNode
 }
 
 type astTextNode struct {
@@ -79,6 +89,14 @@ func (n *astImageNode) isNode()          {}
 func (n *astLinkNode) isNode()           {}
 func (n *astListNode) isNode()           {}
 func (n *astListItemNode) isNode()       {}
+
+func (n *astCodeInlineNode) isInlineNode() {}
+func (n *astTextNode) isInlineNode()       {}
+func (n *astImageNode) isInlineNode()      {}
+func (n *astLinkNode) isInlineNode()       {}
+
+func (n *astQuoteNode) isQuoteChild()     {}
+func (n *astQuoteItemNode) isQuoteChild() {}
 
 type parser struct {
 	tks      []token
@@ -183,7 +201,7 @@ func (p *parser) parseBlockQuote() (*astQuoteNode, error) {
 	if err != nil {
 		return nil, fmt.Errorf("consuming root quote children: %w", err)
 	}
-	quoteRoot := &astQuoteNode{children: []astNode{quoteRootItem}}
+	quoteRoot := &astQuoteNode{children: []astQuoteChild{quoteRootItem}}
 
 	nodeIndentMap := make(map[int]*astQuoteNode)
 	nodeIndentMap[quote.indent] = quoteRoot
@@ -213,7 +231,7 @@ func (p *parser) parseBlockQuote() (*astQuoteNode, error) {
 			if err != nil {
 				return nil, fmt.Errorf("parsing quote item: %w", err)
 			}
-			node := &astQuoteNode{children: []astNode{item}}
+			node := &astQuoteNode{children: []astQuoteChild{item}}
 			nodeIndentMap[t.indent] = node
 
 			// Add new node to parent quote children.
@@ -252,7 +270,7 @@ func (p *parser) parseList() (*astListNode, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parsing root list item children: %w", err)
 	}
-	root := &astListNode{ordered: rootItem.ordered, children: []astListItemNode{{children: rootChildren}}}
+	root := &astListNode{ordered: rootItem.ordered, children: []astListItemNode{{children: inlineToNodes(rootChildren)}}}
 
 	listStack := make([]listStackItem, 0)
 	listStack = append(listStack, listStackItem{node: root, indent: 0})
@@ -271,7 +289,7 @@ func (p *parser) parseList() (*astListNode, error) {
 			if err != nil {
 				return nil, fmt.Errorf("parsing list item children: %w", err)
 			}
-			node := &astListNode{ordered: curr.ordered, children: []astListItemNode{{children}}}
+			node := &astListNode{ordered: curr.ordered, children: []astListItemNode{{inlineToNodes(children)}}}
 
 			// Append to last child of the top of stack node.
 			top := listStack[len(listStack)-1].node
@@ -291,14 +309,14 @@ func (p *parser) parseList() (*astListNode, error) {
 				return nil, fmt.Errorf("parsing list item children: %w", err)
 			}
 			last := listStack[len(listStack)-1]
-			last.node.children = append(last.node.children, astListItemNode{children: children})
+			last.node.children = append(last.node.children, astListItemNode{children: inlineToNodes(children)})
 		} else { // Same indentation.
 			children, err := p.parseInline()
 			if err != nil {
 				return nil, fmt.Errorf("parsing list item children: %w", err)
 			}
 			last := listStack[len(listStack)-1]
-			last.node.children = append(last.node.children, astListItemNode{children: children})
+			last.node.children = append(last.node.children, astListItemNode{children: inlineToNodes(children)})
 		}
 	}
 
@@ -341,8 +359,8 @@ func (p *parser) parseParagraph() (*astParagraphNode, error) {
 }
 
 // parseInline collects inline tokens across soft line breaks until a blank line or block-level token is reached.
-func (p *parser) parseInline() ([]astNode, error) {
-	var nodes []astNode
+func (p *parser) parseInline() ([]astInlineNode, error) {
+	var nodes []astInlineNode
 
 	onInlineLine := func() bool {
 		// Inline tokens on current line.
@@ -377,8 +395,8 @@ func (p *parser) parseInline() ([]astNode, error) {
 }
 
 // parseInlineBlockQuote collects inline tokens within a block quote, treating a newline+blockQuoteToken pair as a soft line break.
-func (p *parser) parseInlineBlockQuote() ([]astNode, error) {
-	var nodes []astNode
+func (p *parser) parseInlineBlockQuote() ([]astInlineNode, error) {
+	var nodes []astInlineNode
 
 	onInlineLine := func() bool {
 		// Inline tokens on current line.
@@ -416,7 +434,7 @@ func (p *parser) parseInlineBlockQuote() ([]astNode, error) {
 }
 
 // parseInlineSingle consumes exactly one inline token (text, inline code, or link) and returns the corresponding AST node.
-func (p *parser) parseInlineSingle() (astNode, error) {
+func (p *parser) parseInlineSingle() (astInlineNode, error) {
 	if peek[*textToken](p, 1) {
 		t, err := consume[*textToken](p)
 		if err != nil {
@@ -469,4 +487,12 @@ func consume[T token](p *parser) (T, error) {
 
 	p.tksStart++
 	return t, nil
+}
+
+func inlineToNodes(inline []astInlineNode) []astNode {
+	nodes := make([]astNode, len(inline))
+	for i, n := range inline {
+		nodes[i] = n
+	}
+	return nodes
 }

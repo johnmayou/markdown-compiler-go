@@ -17,7 +17,7 @@ func TestParser(t *testing.T) {
 
 	want := &astRootNode{
 		children: []astNode{
-			&astParagraphNode{children: []astNode{&astTextNode{text: "text", bold: false, italic: false}}},
+			&astParagraphNode{children: []astInlineNode{&astTextNode{text: "text", bold: false, italic: false}}},
 		},
 	}
 
