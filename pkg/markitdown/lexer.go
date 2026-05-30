@@ -232,7 +232,7 @@ func (l *lexer) tryTokenizeList() (bool, error) {
 		spaces++
 	}
 
-	if l.md[spaces] == '*' || l.md[spaces] == '_' { // un-ordered
+	if l.md[spaces] == '*' || l.md[spaces] == '-' { // un-ordered
 		l.tks = append(l.tks, &listItemToken{indent: spaces / listIndentSize, ordered: false, digit: -1})
 		l.md = l.md[spaces+2:] // 2 = */- + space
 	} else {
