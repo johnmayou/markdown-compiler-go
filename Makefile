@@ -15,6 +15,7 @@ test:
 
 .PHONY: release
 release: ## tag and push to trigger release workflow (usage: make release VERSION=v0.1.0)
+	@test -n "$(VERSION)" || (echo "error: VERSION is required (e.g. make release VERSION=v0.1.0)"; exit 1)
 	@latest=$$(git tag --sort=-v:refname | head -1); \
 	if [ -n "$$latest" ]; then \
 		newer=$$(printf '%s\n' "$$latest" "$(VERSION)" | sort -V | tail -1); \
