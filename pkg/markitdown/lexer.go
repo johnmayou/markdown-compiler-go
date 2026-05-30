@@ -124,7 +124,7 @@ func (l *lexer) tryTokenizeHeader() (bool, error) {
 		return false, nil
 	}
 
-	hsize := len(match[0])
+	hsize := len(match[1])
 	l.tks = append(l.tks, &headerToken{size: hsize})
 	l.md = l.md[hsize+1:]
 	l.tokenizeCurrentLine()
@@ -189,14 +189,14 @@ func (l *lexer) tryTokenizeBlockQuote() (bool, error) {
 	}
 
 	indent := 0
-	for _, ch := range match[0] {
+	for _, ch := range match[1] {
 		if ch == '>' {
 			indent++
 		}
 	}
 
 	l.tks = append(l.tks, &blockQuoteToken{indent: indent})
-	l.md = l.md[len(match[0]):]
+	l.md = l.md[len(match[1]):]
 	l.tokenizeCurrentLine()
 
 	return true, nil
