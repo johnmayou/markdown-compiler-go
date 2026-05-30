@@ -1,12 +1,14 @@
 package markitdown
 
-type codegen struct{}
-
-func newCodegen() *codegen {
-	return &codegen{}
+type codegen struct {
+	ast astRootNode
 }
 
-func (c *codegen) gen(ast astRootNode) string {
-	_ = ast
-	return ""
+func newCodegen(ast astRootNode) *codegen {
+	return &codegen{ast: ast}
+}
+
+func (c *codegen) gen() (string, error) {
+	_ = c.ast
+	return "", nil
 }

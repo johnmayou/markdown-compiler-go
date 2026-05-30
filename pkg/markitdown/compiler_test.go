@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAdd(t *testing.T) {
-	require.Equal(t, "", Compile(""))
+func TestCompile(t *testing.T) {
+	result, err := Compile("")
+	require.NoError(t, err)
+	require.Equal(t, "", result)
 }

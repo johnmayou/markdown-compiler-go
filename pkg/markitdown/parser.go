@@ -10,15 +10,15 @@ type astRootNode struct {
 
 func (n *astRootNode) isNode() {}
 
-type parser struct{}
-
-func newParser() *parser {
-	return &parser{}
+type parser struct {
+	tks []token
 }
 
-func (p *parser) parse(tks []token) astRootNode {
-	_ = tks
-	return astRootNode{
-		children: make([]astNode, 0),
-	}
+func newParser(tks []token) *parser {
+	return &parser{tks: tks}
+}
+
+func (p *parser) parse() (astRootNode, error) {
+	_ = p.tks
+	return astRootNode{children: make([]astNode, 0)}, nil
 }
