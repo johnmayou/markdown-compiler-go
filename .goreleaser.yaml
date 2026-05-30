@@ -5,15 +5,4 @@ before:
     - go mod tidy
 
 builds:
-  - env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-
-archives:
-  - formats: [tar.gz]
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+  - skip: true
