@@ -482,7 +482,7 @@ func consume[T token](p *parser) (T, error) {
 
 	t, ok := p.tks[p.tksStart].(T)
 	if !ok {
-		return zero, fmt.Errorf("unexpected token type: %T", p.tks[p.tksStart])
+		return zero, fmt.Errorf("expected %T token type but got %T", zero, p.tks[p.tksStart])
 	}
 
 	p.tksStart++
