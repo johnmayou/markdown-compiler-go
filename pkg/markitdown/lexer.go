@@ -348,15 +348,14 @@ func (l *lexer) tokenizeCurrentLine() {
 
 	for len(line) > 0 {
 		var match []string
-		var matches [][]string
 
 		// == Bold & Italic ==
 		match = textBoldItalicRegex.FindStringSubmatch(line)
 		if len(match) > 0 {
 			currPush()
 
-			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[0]), bold: true, italic: true})
-			line = line[len(match[0]):]
+			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[1]), bold: true, italic: true})
+			line = line[len(match[1]):]
 
 			continue
 		}
@@ -366,8 +365,8 @@ func (l *lexer) tokenizeCurrentLine() {
 		if len(match) > 0 {
 			currPush()
 
-			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[0]), bold: true, italic: false})
-			line = line[len(match[0]):]
+			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[1]), bold: true, italic: false})
+			line = line[len(match[1]):]
 		}
 
 		// == Italic ==
@@ -375,39 +374,39 @@ func (l *lexer) tokenizeCurrentLine() {
 		if len(match) > 0 {
 			currPush()
 
-			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[0]), bold: false, italic: true})
-			line = line[len(match[0]):]
+			l.tks = append(l.tks, &textToken{text: emphasisReplacer.Replace(match[1]), bold: false, italic: true})
+			line = line[len(match[1]):]
 		}
 
 		// == Image ==
-		matches = textImageRegex.FindAllStringSubmatch(line, -1)
-		if len(matches) > 0 {
+		match = textImageRegex.FindStringSubmatch(line)
+		if len(match) > 0 {
 			currPush()
 
-			l.tks = append(l.tks, &imageToken{alt: match[0], src: match[1]})
-			line = line[len(match[0])+len(match[1])+5:] // 5 = ![]()
+			l.tks = append(l.tks, &imageToken{alt: match[1], src: match[2]})
+			line = line[len(match[1])+len(match[2])+5:] // 5 = ![]()
 
 			continue
 		}
 
 		// == Link ==
-		matches = textLinkRegex.FindAllStringSubmatch(line, -1)
-		if len(matches) > 0 {
+		match = textLinkRegex.FindStringSubmatch(line)
+		if len(match) > 0 {
 			currPush()
 
-			l.tks = append(l.tks, &linkToken{text: match[0], href: match[1]})
-			line = line[len(match[0])+len(match[1])+4:] // 4 = []()
+			l.tks = append(l.tks, &linkToken{text: match[1], href: match[2]})
+			line = line[len(match[1])+len(match[2])+4:] // 4 = []()
 
 			continue
 		}
 
 		// == Code ==
-		matches = textCodeRegex.FindAllStringSubmatch(line, -1)
-		if len(matches) > 0 {
+		match = textCodeRegex.FindStringSubmatch(line)
+		if len(match) > 0 {
 			currPush()
 
-			code := match[0]
-			lang := match[1]
+			code := match[1]
+			lang := match[2]
 			l.tks = append(l.tks, &codeInlineToken{lang: lang, code: code})
 			line = line[len(code)+len(lang)+2:] // 2 = ``
 
