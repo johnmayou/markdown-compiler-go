@@ -1,10 +1,10 @@
 package markitdown
 
 type codegen struct {
-	ast astRootNode
+	ast *astRootNode
 }
 
-func newCodegen(ast astRootNode) *codegen {
+func newCodegen(ast *astRootNode) *codegen {
 	return &codegen{ast: ast}
 }
 
