@@ -1,20 +1,14 @@
 package markitdown
 
-type nodeKind int
-
-const (
-	nodeRoot nodeKind = iota
-)
-
 type astNode interface {
-	kind() nodeKind
+	isNode()
 }
 
 type astRootNode struct {
 	children []astNode
 }
 
-func (n *astRootNode) kind() nodeKind { return nodeRoot }
+func (n *astRootNode) isNode() {}
 
 type parser struct{}
 
