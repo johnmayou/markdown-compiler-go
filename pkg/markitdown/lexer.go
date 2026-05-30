@@ -160,7 +160,7 @@ func (l *lexer) tryTokenizeCodeBlock() (bool, error) {
 		if codeEnd+2 >= len(l.md) {
 			return false, nil // no ending to code block
 		}
-		if l.md[codeEnd] == '`' && l.md[codeEnd+1] == '`' { // TODO: l.md[codeEnd + 2]?
+		if l.md[codeEnd] == '`' && l.md[codeEnd+1] == '`' {
 			codeEnd -= 2 // go backwards through `, \n
 			break
 		}
@@ -173,7 +173,7 @@ func (l *lexer) tryTokenizeCodeBlock() (bool, error) {
 
 	code := l.md[codeStart : codeEnd+2]
 	l.md = l.md[codeEnd+5:] // move to after the ``` and \n
-	l.tks = append(l.tks, &codeBlockToken{lang: match[0], code: code})
+	l.tks = append(l.tks, &codeBlockToken{lang: match[1], code: code})
 	l.tks = append(l.tks, &newLineToken{})
 
 	return true, nil
