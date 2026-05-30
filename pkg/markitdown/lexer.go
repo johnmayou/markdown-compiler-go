@@ -325,13 +325,14 @@ func (l *lexer) tokenizeCurrentLine() {
 	for {
 		lineEnd++
 		if lineEnd == len(l.md) { // EOF
+			lineEnd--
 			break
 		}
 		if l.md[lineEnd] == '\n' {
 			break
 		}
 	}
-	line := l.md[:lineEnd]
+	line := l.md[:lineEnd+1]
 	l.md = l.md[len(line):]
 
 	// Keep track of current substring.
