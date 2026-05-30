@@ -202,7 +202,7 @@ func (l *lexer) tryTokenizeBlockQuote() (bool, error) {
 	return true, nil
 }
 
-var horizontalRuleRegex = regexp.MustCompile(`\A(?:\*{3,}\**|-{3,}-*)\s*$`)
+var horizontalRuleRegex = regexp.MustCompile(`(?m)\A(?:\*{3,}\**|-{3,}-*)\s*$`)
 
 // tryTokenizeHorizontalRule matches a line of three or more * or - characters.
 func (l *lexer) tryTokenizeHorizontalRule() (bool, error) {
