@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-go test -v ./...
+go test -v ./... ${UPDATE:+-update}

@@ -13,6 +13,10 @@ flint: fmt lint
 test:
 	@bash ./scripts/ci-test.sh
 
+.PHONY: test-update
+test-update:
+	@UPDATE=1 bash ./scripts/ci-test.sh
+
 .PHONY: release
 release: ## tag and push to trigger release workflow (usage: make release VERSION=v0.1.0)
 	@test -n "$(VERSION)" || (echo "error: VERSION is required (e.g. make release VERSION=v0.1.0)"; exit 1)
