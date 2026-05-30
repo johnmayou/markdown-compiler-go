@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TextLexer(t *testing.T) {
+func TextLexerSmokeTest(t *testing.T) {
 	got, err := newLexer("text").tokenize()
 	require.NoError(t, err)
 

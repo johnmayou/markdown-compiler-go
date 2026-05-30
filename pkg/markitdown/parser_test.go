@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParser(t *testing.T) {
+func TestParserSmokeTest(t *testing.T) {
 	got, err := newParser(
 		[]token{
 			&textToken{text: "text", bold: false, italic: false},
