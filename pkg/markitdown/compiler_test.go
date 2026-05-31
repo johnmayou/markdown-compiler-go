@@ -41,6 +41,19 @@ func TestCompile(t *testing.T) {
 	}
 }
 
+func TestCompileRegression(t *testing.T) {
+	t.Run("handles markdown without ending new line", func(t *testing.T) {
+		actual, err := Compile("# Hello World")
+		require.NoError(t, err)
+		require.Equal(t, "<h1>Hello World</h1><hr>", actual)
+	})
+	t.Run("handles markdown with ending new line", func(t *testing.T) {
+		actual, err := Compile("# Hello World\n")
+		require.NoError(t, err)
+		require.Equal(t, "<h1>Hello World</h1><hr>", actual)
+	})
+}
+
 func prettifyHTML(html string) (string, error) {
 	cmd := exec.Command("prettier", "--parser", "html")
 	cmd.Stdin = strings.NewReader(html)

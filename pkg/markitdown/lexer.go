@@ -89,6 +89,9 @@ func (l *lexer) tokenize() ([]token, error) {
 		l.tryTokenizeNewLine,
 	}
 
+	// Try each tokenizer until we match a block-level element.
+	// Not finding a match means the line contains only inline
+	// elements, which tokenizeCurrentLine can handle.
 	for len(l.md) > 0 {
 		matched := false
 		for _, try := range tokenizers {
@@ -106,6 +109,8 @@ func (l *lexer) tokenize() ([]token, error) {
 		}
 	}
 
+	// Ensure we always have an ending newline token, reduces
+	// complexity in the parser.
 	if len(l.tks) > 0 {
 		if _, ok := l.tks[len(l.tks)-1].(*newLineToken); !ok {
 			l.tks = append(l.tks, &newLineToken{})
@@ -432,6 +437,15 @@ func (l *lexer) tokenizeCurrentLine() {
 	}
 
 	currPush()
+
+	// If the current line does not have a \n at the end,
+	// in the case of EOF, then make sure we always have one.
+	// This reduces complexity of downstream parsing logic.
+	if len(l.tks) > 0 {
+		if _, ok := l.tks[len(l.tks)-1].(*newLineToken); !ok {
+			l.tks = append(l.tks, &newLineToken{})
+		}
+	}
 }
 
 // deleteCurrentLine removes the current line from l.md, including its trailing newline.
