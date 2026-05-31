@@ -28,7 +28,3 @@ release: ## tag and push to trigger release workflow (usage: make release VERSIO
 		fi; \
 	fi
 	@git tag $(VERSION) && git push origin $(VERSION)
-
-.PHONY: release-dry-run
-release-dry-run: ## build release bin locally without publishing
-	goreleaser release --clean --snapshot
