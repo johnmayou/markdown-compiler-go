@@ -235,12 +235,12 @@ func (l *lexer) tryTokenizeList() (bool, error) {
 	if l.md[spaces] == '*' || l.md[spaces] == '-' { // un-ordered
 		l.tks = append(l.tks, &listItemToken{indent: spaces / listIndentSize, ordered: false, digit: -1})
 		l.md = l.md[spaces+2:] // 2 = */- + space
-	} else {
+	} else { // ordered
 		digit, err := strconv.Atoi(string(l.md[spaces]))
 		if err != nil {
 			return false, fmt.Errorf("parsing ordered digit: %w", err)
 		}
-		l.tks = append(l.tks, &listItemToken{indent: spaces / listIndentSize, ordered: false, digit: digit})
+		l.tks = append(l.tks, &listItemToken{indent: spaces / listIndentSize, ordered: true, digit: digit})
 		l.md = l.md[spaces+3:] // 3 = digit + period + space
 	}
 
