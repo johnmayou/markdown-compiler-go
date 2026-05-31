@@ -31,7 +31,7 @@ func TestCompile(t *testing.T) {
 
 			golden := replaceExt(casepath, "html")
 			if *update {
-				os.WriteFile(golden, []byte(actual), 0644)
+				require.NoError(t, os.WriteFile(golden, []byte(actual), 0644))
 			}
 
 			expected, err := os.ReadFile(golden)
