@@ -1,6 +1,14 @@
 # markdown-compiler-go
 
-A Markdown-to-HTML compiler written in Go. Implements a classic three stage pipeline: lexer, parser, and code generator.
+A Markdown-to-HTML compiler written in Go.
+
+## How It Works
+
+The compiler follows a classic pipeline:
+
+1. Lexer (Tokenizer): Scans the raw Markdown input and produces a list of tokens.
+2. Parser: Processes tokens into an abstract syntax tree (AST) representing the document structure.
+3. Code Generator: Converts the AST into the target language (HTML).
 
 ## Usage
 
