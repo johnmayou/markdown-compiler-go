@@ -15,7 +15,7 @@ import (
 var update = flag.Bool("update", false, "update golden files")
 
 func TestCompile(t *testing.T) {
-	cases, err := filepath.Glob("testdata/*.text")
+	cases, err := filepath.Glob("testdata/*.md")
 	require.NoError(t, err)
 
 	for _, casepath := range cases {
@@ -29,7 +29,7 @@ func TestCompile(t *testing.T) {
 			actual, err = prettifyHTML(actual)
 			require.NoError(t, err)
 
-			golden := replaceExt(casepath, "html")
+			golden := replaceExt(casepath, ".golden.html")
 			if *update {
 				require.NoError(t, os.WriteFile(golden, []byte(actual), 0644))
 			}
@@ -52,5 +52,5 @@ func prettifyHTML(html string) (string, error) {
 }
 
 func replaceExt(path, new string) string {
-	return strings.TrimSuffix(path, filepath.Ext(path)) + "." + new
+	return strings.TrimSuffix(path, filepath.Ext(path)) + new
 }
