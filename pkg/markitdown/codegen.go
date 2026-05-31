@@ -195,6 +195,7 @@ func (c *codegen) escapeHtml(str string) string {
 				p := 0
 				for p < i {
 					new = append(new, string(str[p]))
+					p++
 				}
 			}
 
