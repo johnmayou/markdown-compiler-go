@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCodegenSmokeTest(t *testing.T) {
+func TestCodegenSmoke(t *testing.T) {
 	got, err := newCodegen(
 		&astRootNode{
 			children: []astNode{
