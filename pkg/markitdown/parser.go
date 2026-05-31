@@ -280,7 +280,7 @@ func (p *parser) parseList() (*astListNode, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invariant violation: peek confirmed token but consume failed: %w", err)
 		}
-		currIndent := min(listStack[len(listStack)-1].indent+1, curr.indent)
+		currIndent := min(listStack[len(listStack)-1].indent+1, curr.indent) // Only allow 1 additional indent at a time.
 		lastIndent := listStack[len(listStack)-1].indent
 
 		if currIndent > lastIndent { // Deeper indent.
@@ -489,6 +489,7 @@ func consume[T token](p *parser) (T, error) {
 	return t, nil
 }
 
+// inlineToNodes converts a slice of astInlineNode to a slice of astNode.
 func inlineToNodes(inline []astInlineNode) []astNode {
 	nodes := make([]astNode, len(inline))
 	for i, n := range inline {
