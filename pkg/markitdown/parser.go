@@ -293,7 +293,7 @@ func (p *parser) parseList() (*astListNode, error) {
 
 			// Append to last child of the top of stack node.
 			top := listStack[len(listStack)-1].node
-			topLastChild := top.children[len(top.children)-1]
+			topLastChild := &top.children[len(top.children)-1]
 			topLastChild.children = append(topLastChild.children, node)
 
 			// Add new node to stack.
