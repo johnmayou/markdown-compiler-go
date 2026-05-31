@@ -54,7 +54,7 @@ Unordered and ordered lists support nesting via 2-space indentation. Block quote
 
 ### Prerequisites
 
-- Go 1.26.3
+- Go 1.26+
 - [prettier](https://prettier.io) — used by the test suite to normalize HTML before golden-file comparison
 - [golangci-lint](https://golangci-lint.run) v2.12.2 — installed automatically by `make lint` if missing
 
